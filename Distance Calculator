@@ -1,0 +1,48 @@
+dist_calc<-function(focal,target,var){
+  returnR<-matrix(0,length(focal),ncol(var)-1)
+  
+  if(!is.null(ncol(focal))){
+    target<-focal[,2]
+    focal<-focal[,1]
+  }
+  
+  for ( j in 2:ncol(var)){
+  if(is.numeric(var[,j])){
+    pbh<-matrix(0,length(focal),3)
+    for ( i in 1:length(focal)){
+      pbh[i,1]<-var[which(var[,1]==focal[i]),j]
+      pbh[i,2]<-var[which(var[,1]==target[i]),j]
+      pbh[i,3]<-abs(pbh[i,1]-pbh[i,2])
+    }}
+  
+  if(is.integer(var[,j])){
+    pbh<-matrix(0,length(focal),3)
+    for ( i in 1:length(focal)){
+      pbh[i,1]<-var[which(var[,1]==focal[i]),j]
+      pbh[i,2]<-var[which(var[,1]==target[i]),j]
+      pbh[i,3]<-abs(pbh[i,1]-pbh[i,2])
+    }}
+  
+  if(is.factor(var[,j])){
+    pbh<-matrix(0,length(focal),3)
+    pbh[,2] <- as.factor(as.character(pbh[,2]))
+    for ( i in 1:length(focal)){
+      pbh[i,1]<-var[which(var[,1]==focal[i]),j]
+      pbh[i,2]<-var[which(var[,1]==target[i]),j]
+      pbh[i,3]<-ifelse(pbh[i,1]==pbh[i,2],"Equal",paste(sort(c(pbh[i,2],pbh[i,1])),collapse = "-"))
+    }}
+  
+  
+  if(is.character(var[,j])){
+    pbh<-matrix(0,length(focal),3)
+    pbh[,2] <- as.factor(as.character(pbh[,2]))
+    for ( i in 1:length(focal)){
+      pbh[i,1]<-var[which(var[,1]==focal[i]),j]
+      pbh[i,2]<-var[which(var[,1]==target[i]),j]
+      pbh[i,3]<-ifelse(pbh[i,1]==pbh[i,2],"Equal",paste(sort(c(pbh[i,2],pbh[i,1])),collapse = "-"))
+    }}
+    returnR[,j-1]<-pbh[,3]
+    
+  }
+  return(returnR)
+}
